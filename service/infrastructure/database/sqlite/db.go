@@ -12,14 +12,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// RunningTestsEnvName is env indicating whether running tests
 const (
 	RunningTestsEnvName = "IS_RUNNING_TEST"
 )
 
+// DBImpl is a db implementation of repository interface
 type DBImpl struct {
 	db *gorm.DB
 }
 
+// IsRunningTests checks whether test are being run
 func IsRunningTests() bool {
 	envValue := os.Getenv(RunningTestsEnvName)
 
@@ -31,6 +34,7 @@ func IsRunningTests() bool {
 	return value
 }
 
+// NewSqliteDBImpl new sql db implementation
 func NewSqliteDBImpl() *DBImpl {
 	var dsn string
 
@@ -55,6 +59,7 @@ func NewSqliteDBImpl() *DBImpl {
 	}
 }
 
+// GetCustomers retrieves the customers in the db
 func (d DBImpl) GetCustomers(ctx context.Context, filters *domain.FilterInput, pagination domain.PaginationInput) ([]*Customer, error) {
 	var customers []*Customer
 

@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// PrepareServer composes the http server to use
 func PrepareServer(port int) *http.Server {
 	addr := fmt.Sprintf(":%d", port)
 	router := mux.NewRouter()

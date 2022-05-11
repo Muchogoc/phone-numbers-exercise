@@ -7,23 +7,24 @@ import (
 	"github.com/Muchogoc/phone-numbers-exercise/service/usecases"
 )
 
-// PresentationHandlers represents all the handler logic
+// Handlers represents all the handler logic
 type Handlers interface {
 	ListCustomers() http.HandlerFunc
 }
 
-// HandlersImpl represents the usecase implementation object
+// HandlersImpl represents the handler implementation
 type HandlersImpl struct {
 	usecases usecases.Usecases
 }
 
-// NewHandlers initializes a new rest handlers usecase
+// NewHandlers initializes a new rest handlers interface
 func NewHandlers(usecases usecases.Usecases) Handlers {
 	return &HandlersImpl{
 		usecases: usecases,
 	}
 }
 
+// ListCustomers handles listing of customers
 func (h HandlersImpl) ListCustomers() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
