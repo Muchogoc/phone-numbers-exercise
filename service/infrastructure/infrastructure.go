@@ -13,6 +13,7 @@ type Infrastructure interface {
 	database.Repository
 }
 
+// InfrastructureImpl implements the Infrastructure interface
 type InfrastructureImpl struct {
 	repository database.Repository
 }
@@ -26,6 +27,7 @@ func NewInfrastructure() Infrastructure {
 	}
 }
 
+// GetCustomers gets the customers from the database
 func (d InfrastructureImpl) GetCustomers(ctx context.Context, filters *domain.FilterInput, pagination domain.PaginationInput) ([]*domain.Customer, error) {
 	customers, err := d.repository.GetCustomers(ctx, filters, pagination)
 	if err != nil {

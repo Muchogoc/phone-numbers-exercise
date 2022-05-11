@@ -7,6 +7,7 @@ import (
 	"github.com/Muchogoc/phone-numbers-exercise/service/domain"
 )
 
+// phoneCountry determines a phones country
 func phoneCountry(code string) domain.Country {
 	// Converts a country code to the standard i.e (254) to +254
 	code = strings.Replace(code, "(", "", 1)

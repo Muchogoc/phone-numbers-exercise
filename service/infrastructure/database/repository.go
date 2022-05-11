@@ -10,14 +10,17 @@ import (
 	"github.com/Muchogoc/phone-numbers-exercise/service/infrastructure/database/sqlite"
 )
 
+// Repository is the interface a datastore must implement
 type Repository interface {
 	GetCustomers(ctx context.Context, filters *domain.FilterInput, pagination domain.PaginationInput) ([]*domain.Customer, error)
 }
 
+// DatabaseImpl is an implementation of the database
 type DatabaseImpl struct {
 	sqlite *sqlite.DBImpl
 }
 
+// NewDatabaseImpl new implementation of the repository
 func NewDatabaseImpl() Repository {
 	sq := sqlite.NewSqliteDBImpl()
 	return &DatabaseImpl{
@@ -25,6 +28,7 @@ func NewDatabaseImpl() Repository {
 	}
 }
 
+// GetCustomers gets the customers from the database implementation
 func (d DatabaseImpl) GetCustomers(ctx context.Context, filters *domain.FilterInput, pagination domain.PaginationInput) ([]*domain.Customer, error) {
 	mapped := []*domain.Customer{}
 
