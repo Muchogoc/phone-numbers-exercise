@@ -2,7 +2,6 @@ package presentation
 
 import (
 	"fmt"
-	"io/fs"
 	"net/http"
 	"os"
 	"time"
@@ -22,20 +21,21 @@ func PrepareServer(port int) *http.Server {
 	usecases := usecases.NewUsecasesImpl(infra)
 	rest := rest.NewHandlers(usecases)
 
-	var frontend fs.FS = os.DirFS("frontend")
-	httpFS := http.FS(frontend)
-	fileServer := http.FileServer(httpFS)
-
-	router.Path("/").Handler(fileServer)
-	router.Path("/customers/").Methods(
+	api := router.PathPrefix("/api/v1").Subrouter()
+	api.Path("/customers").Methods(
 		http.MethodOptions,
 		http.MethodGet,
 	).Handler(rest.ListCustomers())
+
+	// serves the SPA
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./frontend/build/")))
 
 	h := handlers.CombinedLoggingHandler(os.Stdout, router)
 	h = handlers.RecoveryHandler(
 		handlers.PrintRecoveryStack(true),
 	)(h)
+	allowedOrigins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
+	h = handlers.CORS(allowedOrigins)(h)
 
 	srv := &http.Server{
 		Handler:      h,

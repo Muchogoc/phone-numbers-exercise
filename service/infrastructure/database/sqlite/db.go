@@ -3,6 +3,8 @@ package sqlite
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/Muchogoc/phone-numbers-exercise/service/domain"
@@ -10,15 +12,44 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	RunningTestsEnvName = "IS_RUNNING_TEST"
+)
+
 type DBImpl struct {
 	db *gorm.DB
 }
 
+func IsRunningTests() bool {
+	envValue := os.Getenv(RunningTestsEnvName)
+
+	value, err := strconv.ParseBool(envValue)
+	if err != nil {
+		return false
+	}
+
+	return value
+}
+
 func NewSqliteDBImpl() *DBImpl {
-	db, err := gorm.Open(sqlite.Open("sample.db"), &gorm.Config{})
+	var dsn string
+
+	// For test use the virtual db
+	if IsRunningTests() {
+		dsn = "file::memory:?cache=shared"
+	} else {
+		dsn = "sample.db"
+	}
+
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
+
+	if IsRunningTests() {
+		db.AutoMigrate(&Customer{})
+	}
+
 	return &DBImpl{
 		db: db,
 	}

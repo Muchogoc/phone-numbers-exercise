@@ -29,7 +29,7 @@ func NewUsecasesImpl(infra infrastructure.Infrastructure) Usecases {
 func (u UsecasesImpl) ListCustomers(ctx context.Context, filters *domain.FilterInput, pagination domain.PaginationInput) ([]*domain.Customer, error) {
 	customers, err := u.infra.GetCustomers(ctx, filters, pagination)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching customers")
+		return nil, fmt.Errorf("error fetching customers: %w", err)
 	}
 
 	return customers, nil

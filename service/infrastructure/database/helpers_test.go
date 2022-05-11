@@ -16,7 +16,20 @@ func Test_phoneCountry(t *testing.T) {
 		args args
 		want domain.Country
 	}{
-		// TODO: Add test cases.
+		{
+			name: "happy case: valid country",
+			args: args{
+				code: "(237)",
+			},
+			want: domain.CountryCameroon,
+		},
+		{
+			name: "sad case: invalid country",
+			args: args{
+				code: "(254)",
+			},
+			want: "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

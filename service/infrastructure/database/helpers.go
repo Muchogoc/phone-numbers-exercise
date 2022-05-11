@@ -13,18 +13,11 @@ func phoneCountry(code string) domain.Country {
 	code = strings.Replace(code, ")", "", 1)
 	code = fmt.Sprintf("+%s", code)
 
-	switch code {
-	case "+237":
-		return domain.CountryCameroon
-	case "+251":
-		return domain.CountryEthiopia
-	case "+212":
-		return domain.CountryMorocco
-	case "+258":
-		return domain.CountryMozambique
-	case "+256":
-		return domain.CountryUganda
-	default:
-		return ""
+	for _, country := range domain.AllCountries {
+		if country.Code() == code {
+			return country
+		}
 	}
+
+	return ""
 }

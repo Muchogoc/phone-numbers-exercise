@@ -2,12 +2,24 @@ package usecases
 
 import (
 	"context"
-	"reflect"
+	"os"
 	"testing"
 
 	"github.com/Muchogoc/phone-numbers-exercise/service/domain"
 	"github.com/Muchogoc/phone-numbers-exercise/service/infrastructure"
+	"github.com/Muchogoc/phone-numbers-exercise/service/infrastructure/database/sqlite"
 )
+
+func TestMain(m *testing.M) {
+	initialValue := os.Getenv(sqlite.RunningTestsEnvName)
+	os.Setenv(sqlite.RunningTestsEnvName, "true")
+
+	exitVal := m.Run()
+
+	os.Setenv(sqlite.RunningTestsEnvName, initialValue)
+
+	os.Exit(exitVal)
+}
 
 func TestUsecasesImpl_ListCustomers(t *testing.T) {
 	type args struct {
@@ -18,7 +30,6 @@ func TestUsecasesImpl_ListCustomers(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    []*domain.Customer
 		wantErr bool
 	}{
 		{
@@ -34,7 +45,6 @@ func TestUsecasesImpl_ListCustomers(t *testing.T) {
 					Offset: -1,
 				},
 			},
-			want:    []*domain.Customer{},
 			wantErr: false,
 		},
 	}
@@ -47,8 +57,8 @@ func TestUsecasesImpl_ListCustomers(t *testing.T) {
 				t.Errorf("UsecasesImpl.ListCustomers() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UsecasesImpl.ListCustomers() = %v, want %v", got, tt.want)
+			if !tt.wantErr && got == nil {
+				t.Errorf("UsecasesImpl.ListCustomers() = %v", got)
 			}
 		})
 	}

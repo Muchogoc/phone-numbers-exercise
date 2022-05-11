@@ -2,17 +2,24 @@ package sqlite
 
 import (
 	"context"
-	"reflect"
+	"os"
 	"testing"
 
 	"github.com/Muchogoc/phone-numbers-exercise/service/domain"
-	"gorm.io/gorm"
 )
 
+func TestMain(m *testing.M) {
+	initialValue := os.Getenv(RunningTestsEnvName)
+	os.Setenv(RunningTestsEnvName, "true")
+
+	exitVal := m.Run()
+
+	os.Setenv(RunningTestsEnvName, initialValue)
+
+	os.Exit(exitVal)
+}
+
 func TestDBImpl_GetCustomers(t *testing.T) {
-	type fields struct {
-		db *gorm.DB
-	}
 	type args struct {
 		ctx        context.Context
 		filters    *domain.FilterInput
@@ -20,12 +27,23 @@ func TestDBImpl_GetCustomers(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
-		want    []*Customer
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "success: list customers",
+			args: args{
+				ctx: nil,
+				filters: &domain.FilterInput{
+					Country: nil,
+				},
+				pagination: domain.PaginationInput{
+					Limit:  -1,
+					Offset: -1,
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -35,8 +53,8 @@ func TestDBImpl_GetCustomers(t *testing.T) {
 				t.Errorf("DBImpl.GetCustomers() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("DBImpl.GetCustomers() = %v, want %v", got, tt.want)
+			if !tt.wantErr && got == nil {
+				t.Errorf("DBImpl.GetCustomers() = %v", got)
 			}
 		})
 	}

@@ -10,6 +10,14 @@ var (
 	CountryUganda     Country = "Uganda"
 )
 
+var AllCountries = []Country{
+	CountryCameroon,
+	CountryEthiopia,
+	CountryMorocco,
+	CountryMozambique,
+	CountryUganda,
+}
+
 func (c Country) RegexPattern() string {
 	switch c {
 	case CountryCameroon:
